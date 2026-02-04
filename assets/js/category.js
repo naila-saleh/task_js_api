@@ -1,27 +1,10 @@
-const getCategories = async () => {
-    const response = await axios.get(`https://dummyjson.com/products/category-list`);
-    return response.data;
-}
-const displayCategories = async () => {
-    try {
-        const data = await getCategories();
-        const categories = data.map((category) => {
-            return `
-                <div class="category col-lg-3 col-md-4 col-sm-6 col-12 text-center">
-                    <a href="./category.html?category=${category}" class="btn btn-outline-secondary w-100">${category}</a>
-                </div>`
-        }).join('');
-        document.querySelector('.categories .category-list .row').innerHTML = categories;
-    }catch(error) {
-        console.log(error.message);
-    }
-}
-displayCategories();
-
+//https://dummyjson.com/products/category/${category}
 const getProducts = async (page) => {
-    const limit = 10;
+    const limit = 9;
     const skip = (page - 1) * limit;
-    const response = await axios.get(`https://dummyjson.com/products?limit=${limit}&skip=${skip}`);
+    const category = new URLSearchParams(window.location.search).get('category');
+    document.querySelector('.category').innerHTML = category;
+    const response = await axios.get(`https://dummyjson.com/products/category/${category}?limit=${limit}&skip=${skip}`);
     return response.data;
 }
 const displayProducts = async (page=1) => {
