@@ -38,7 +38,7 @@ const displayProducts = async (page=1) => {
                         <h5 class="card-title">${product.title}</h5>
                         <p class="card-text mb-0">Price: ${product.price}$</p>
                         <p class="card-text">Rating: ${product.rating}</p>
-                        <a href="#" class="btn btn-outline-dark">Details</a>
+                        <a href="./details.html?id=${product.id}" class="btn btn-outline-dark">Details</a>
                       </div>
                     </div>
                 </div>
