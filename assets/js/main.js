@@ -27,7 +27,9 @@ const getProducts = async (page) => {
 const displayProducts = async (page=1) => {
     try {
         const data = await getProducts(page);
-        const products = data.products.map((product) => {
+        const limit = 10;
+        const noOfPages = Math.ceil(data.total / limit);
+        const productList = data.products.map((product) => {
             return `
                 <div class="product col-lg-4 col-md-6 col-12">
                     <div class="card text-center">
@@ -42,7 +44,25 @@ const displayProducts = async (page=1) => {
                 </div>
             `
         }).join('');
-        document.querySelector('.products .product-list .row').innerHTML = products;
+        document.querySelector('.products .product-list .row').innerHTML = productList;
+        let paginationLink = ``;
+        if(page > 1) {
+            paginationLink += `<li class="page-item"><button class="page-link" onclick="displayProducts(${page-1})">Previous</button></li>`;
+        }else {
+            paginationLink += `<li class="page-item disabled"><button class="page-link">Previous</button></li>`;
+        }
+        for(let i = 1; i <= noOfPages; i++) {
+            paginationLink += `
+                <li class="page-item ${i === page ? 'active' : ''}">
+                    <button class="page-link" onclick="displayProducts(${i})">${i}</button>
+                </li>`;
+        }
+        if(page < noOfPages) {
+            paginationLink += `<li class="page-item"><button class="page-link" onclick="displayProducts(${page+1})">Next</button></li>`;
+        }else {
+            paginationLink += `<li class="page-item disabled"><button class="page-link">Next</button></li>`;
+        }
+        document.querySelector('.product-list .pagination').innerHTML = paginationLink;
     }catch(error) {
         console.log(error.message);
     }
