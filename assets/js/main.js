@@ -71,6 +71,8 @@ const displayProducts = async (page=1, sortBy='', order='') => {
         document.querySelector('.product-list .pagination').innerHTML = paginationLink;
     }catch(error) {
         console.log(error.message);
+    }finally {
+        document.querySelector('.loader').classList.add('d-none');
     }
 }
 displayProducts();

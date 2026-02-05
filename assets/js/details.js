@@ -36,6 +36,8 @@ const displayProductDetails = async () => {
         document.querySelector('.product-details .details').innerHTML = details;
     }catch (error) {
         console.log(error.message);
+    }finally {
+        document.querySelector('.loader').classList.add('d-none');
     }
 }
 displayProductDetails();
