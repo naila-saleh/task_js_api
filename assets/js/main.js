@@ -1,3 +1,5 @@
+let currentSortBy = '';
+let currentOrder = '';
 const getCategories = async () => {
     const response = await axios.get(`https://dummyjson.com/products/category-list`);
     return response.data;
@@ -18,15 +20,19 @@ const displayCategories = async () => {
 }
 displayCategories();
 
-const getProducts = async (page) => {
+const getProducts = async (page =1, sortBy='', order='') => {
     const limit = 10;
     const skip = (page - 1) * limit;
-    const response = await axios.get(`https://dummyjson.com/products?limit=${limit}&skip=${skip}`);
+    let url = `https://dummyjson.com/products?limit=${limit}&skip=${skip}`
+    if(sortBy && order){
+        url += `&sortBy=${sortBy}&order=${order}`;
+    }
+    const response = await axios.get(url);
     return response.data;
 }
-const displayProducts = async (page=1) => {
+const displayProducts = async (page=1, sortBy='', order='') => {
     try {
-        const data = await getProducts(page);
+        const data = await getProducts(page, sortBy, order);
         const limit = 10;
         const noOfPages = Math.ceil(data.total / limit);
         const productList = data.products.map((product) => {
@@ -47,18 +53,18 @@ const displayProducts = async (page=1) => {
         document.querySelector('.products .product-list .row').innerHTML = productList;
         let paginationLink = ``;
         if(page > 1) {
-            paginationLink += `<li class="page-item"><button class="page-link" onclick="displayProducts(${page-1})">Previous</button></li>`;
+            paginationLink += `<li class="page-item"><button class="page-link" onclick="displayProducts(${page-1}, '${currentSortBy}', '${currentOrder}')">Previous</button></li>`;
         }else {
             paginationLink += `<li class="page-item disabled"><button class="page-link">Previous</button></li>`;
         }
         for(let i = 1; i <= noOfPages; i++) {
             paginationLink += `
                 <li class="page-item ${i === page ? 'active' : ''}">
-                    <button class="page-link" onclick="displayProducts(${i})">${i}</button>
+                    <button class="page-link" onclick="displayProducts(${i}, '${currentSortBy}', '${currentOrder}')">${i}</button>
                 </li>`;
         }
         if(page < noOfPages) {
-            paginationLink += `<li class="page-item"><button class="page-link" onclick="displayProducts(${page+1})">Next</button></li>`;
+            paginationLink += `<li class="page-item"><button class="page-link" onclick="displayProducts(${page+1}, '${currentSortBy}', '${currentOrder}')">Next</button></li>`;
         }else {
             paginationLink += `<li class="page-item disabled"><button class="page-link">Next</button></li>`;
         }
@@ -68,3 +74,16 @@ const displayProducts = async (page=1) => {
     }
 }
 displayProducts();
+
+document.querySelector('.sort-select').addEventListener('change', (e) => {
+    if(e.target.value === 'none') {
+        currentSortBy = '';
+        currentOrder = '';
+        displayProducts(1);
+        return;
+    }
+    const [sortBy, order] = e.target.value.split('-');
+    currentSortBy = sortBy;
+    currentOrder = order;
+    displayProducts(1, sortBy, order);
+})

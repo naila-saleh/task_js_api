@@ -40,7 +40,15 @@
       <section class="products py-5">
         <div class="container">
           <h2>Products</h2>
-          <div class="product-list">
+          <select class="form-select w-25 sort-select">
+            <option selected disabled>Sort by</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="title-asc">Title: From A to Z</option>
+            <option value="title-desc">Title: From Z to A</option>
+            <option value="none">None</option>
+          </select>
+          <div class="product-list py-3">
             <div class="row g-3 justify-content-center"></div>
             <ul class="pagination py-5 justify-content-center">
             </ul>
